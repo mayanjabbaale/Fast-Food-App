@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import CustomInput from '@/components/CustomInput'
 import CustomButton from '@/components/CustomButton'
 import { Link, router } from 'expo-router'
+import { create_user } from '@/lib/appwrite'
 
 const SignUp = () => {
 
@@ -18,6 +19,7 @@ const SignUp = () => {
 
     try {
 
+      await create_user({name: name, email:email, password:password})
       router.replace('/');
     } catch (error: any) {
       Alert.alert('Error', error.message);
