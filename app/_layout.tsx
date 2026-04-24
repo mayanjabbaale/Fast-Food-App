@@ -19,14 +19,14 @@ export default function RootLayout() {
   })
 
   useEffect(() => {
-    if(fontsLoaded){
+    if (fontsLoaded && !isLoading) {
       SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, isLoading]);
 
-  useEffect(()=>{fetchAuthenticatedUser()}, [fetchAuthenticatedUser])
+  useEffect(() => { fetchAuthenticatedUser() }, [fetchAuthenticatedUser])
 
-  if (!fontsLoaded || isLoading ) return null;
+  if (!fontsLoaded || isLoading) return null;
 
-  return <Stack screenOptions={{ headerShown: false}}/>;
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
