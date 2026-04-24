@@ -2,20 +2,15 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { Redirect, Slot, Tabs } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import useAuthStore from '@/store/auth.store'
 
-const TabsScreen = () => {
+const TabsLayout = () => {
 
-  const isSignedIn = false;
+  const { isAuthenticated } = useAuthStore();
 
-  if (!isSignedIn) return <Redirect href='/(auth)/sign_in' />
-  // return (
-  //   <Tabs screenOptions={{headerShown: false}}>
-  //     <Tabs.Screen name='index' options={{title: 'Home'}} />
-  //     <Tabs.Screen name='search' options={{title: 'Search'}} />
-  //     <Tabs.Screen name='cart' options={{title: 'Cart'}} />
-  //     <Tabs.Screen name='profile' options={{title: 'Profile'}} />
-  //   </Tabs>
-  // )
+  if (!isAuthenticated) return <Redirect href='/(auth)/sign_in' />
+  
+  return <Slot />
 }
 
-export default TabsScreen
+export default TabsLayout;
