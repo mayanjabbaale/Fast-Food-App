@@ -1,11 +1,12 @@
 import "@/global.css"
-import { FlatList, Pressable, Text, View, Image, TouchableOpacity } from "react-native";
+import { FlatList, Pressable, Text, View, Image, TouchableOpacity, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images, offers } from "@/constants";
 import { Fragment } from "react";
 import { clsx } from 'clsx';
 import CartButton from "@/components/CartButton";
 import useAuthStore from "@/store/auth.store";
+import seed from "@/lib/seed";
 
 export default function Index() {
   const { user } = useAuthStore();
