@@ -62,11 +62,11 @@
     }
 
     .profile-field {
-        @apply flex flex-row items-center justify-start mb-4;
+        @apply flex flex-row items-center justify-start mb-10;
     }
 
     .profile-field__icon {
-        @apply size-12 rounded-full bg-primary/10 flex items-center justify-center mr-3;
+        @apply size-12 rounded-full bg-primary/10 flex items-center justify-center mr-3 p-2;
     }
 
     .searchbar {
