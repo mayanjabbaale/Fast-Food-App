@@ -1,13 +1,14 @@
-import {View, Text, FlatList} from 'react-native'
-import {SafeAreaView} from "react-native-safe-area-context";
-import {useCartStore} from "@/store/cart.store";
+import { View, Text, FlatList, Image } from 'react-native'
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useCartStore } from "@/store/cart.store";
 import CustomHeader from "@/components/CustomHeader";
 import cn from "clsx";
 import CustomButton from "@/components/CustomButton";
 import { PaymentInfoStripeProps } from '@/type';
 import CartItem from '@/components/CartItem';
+import { images } from '@/constants';
 
-const PaymentInfoStripe = ({ label,  value,  labelStyle,  valueStyle, }: PaymentInfoStripeProps) => (
+const PaymentInfoStripe = ({ label, value, labelStyle, valueStyle, }: PaymentInfoStripeProps) => (
     <View className="flex-between flex-row my-1">
         <Text className={cn("paragraph-medium text-gray-200", labelStyle)}>
             {label}
@@ -28,11 +29,19 @@ const Cart = () => {
         <SafeAreaView className="bg-white h-full">
             <FlatList
                 data={items}
-                renderItem={({ item }) => <CartItem item={item}/>}
-                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => <CartItem item={item} />}
+                keyExtractor={(item) => `${item.id}-${JSON.stringify(item.customizations || [])}`}
                 contentContainerClassName="pb-28 px-5 pt-5"
                 ListHeaderComponent={() => <CustomHeader title="Your Cart" />}
-                ListEmptyComponent={() => <Text>Cart Empty</Text>}
+                ListEmptyComponent={() => (
+                    <View className='justify-center items-center'>
+                        <Image
+                            source={images.dry}
+                            resizeMode='contain'
+                            className='size-full'
+                        />
+                        <Text className='mt-2 paragraph-bold text-dark-100 text-2xl'>Cart is Empty</Text>
+                    </View>)}
                 ListFooterComponent={() => totalItems > 0 && (
                     <View className="gap-5">
                         <View className="mt-6 border border-gray-200 p-5 rounded-2xl">

@@ -5,7 +5,7 @@ import {useCartStore} from "@/store/cart.store";
 
 const MenuCard = ({ item: { $id, image_url, name, price }}: { item: MenuItem}) => {
     const imageUrl = `${image_url}?project=${appwriteConfig.projectId}`;
-    const { addItem } = useCartStore();
+    const addItem = useCartStore(state => state.addItem);
 
     return (
         <TouchableOpacity className="menu-card" style={Platform.OS === 'android' ? { elevation: 10, shadowColor: '#878787'}: {}}>

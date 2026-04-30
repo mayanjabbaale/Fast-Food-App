@@ -6,8 +6,8 @@ import { images } from '@/constants';
 
 const SearchBar = () => {
   const router = useRouter();
-  const params = useLocalSearchParams<{ query: string }>();
-  const [query, setQuery] = useState(params.query);
+  const params = useLocalSearchParams<{ query?: string }>();
+  const [query, setQuery] = useState(params.query ?? '');
 
   const handleSearch = (text: string) => {
     setQuery(text);
@@ -16,7 +16,8 @@ const SearchBar = () => {
   };
 
   const handleSubmit = () => {
-    if (query.trim()) router.setParams({ query });
+    const trimmedQuery = query?.trim();
+    if (trimmedQuery) router.setParams({ query: trimmedQuery });
   };
 
   return (
@@ -24,7 +25,7 @@ const SearchBar = () => {
       <TextInput
         className="flex-1 p-5"
         placeholder="Search for pizzas, burgers..."
-        value={query}
+        value={query ?? ''}
         onChangeText={handleSearch}
         onSubmitEditing={handleSubmit}
         placeholderTextColor="#A0A0A0"
@@ -32,7 +33,7 @@ const SearchBar = () => {
       />
       <TouchableOpacity
         className="pr-5"
-        onPress={() => router.setParams({ query })}
+        onPress={handleSubmit}
       >
         <Image
           source={images.search}
