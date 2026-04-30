@@ -1,9 +1,7 @@
 import { View, Text, Button, FlatList } from 'react-native'
-import React, { use, useEffect } from 'react'
+import React, { useMemo } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import seed from '@/lib/seed'
-import useAppwrite from '@/lib/useAppwrite'
-import { get_categories, get_menu } from '@/lib/appwrite'
 import { useLocalSearchParams } from 'expo-router'
 import CartButton from '@/components/CartButton'
 import clsx from 'clsx'
@@ -11,25 +9,49 @@ import { Category, MenuItem } from '@/type'
 import MenuCard from '@/components/menuCard'
 import SearchBar from '@/components/SearchBar'
 import Filter from '@/components/Filter'
+import dummyData from '@/lib/data'
 
 const SearchScreen = () => {
-
   const { category, query } = useLocalSearchParams<{query?: string; category?: string}>()
 
-  const { data, refetch, loading } = useAppwrite({
-    fn: get_menu,
-    params: { category: category ?? '', query: query ?? '', limit: 6}
-  });
+  // Extract categories from dummy data
+  const categories: Category[] = dummyData.categories.map((cat) => ({
+    $id: cat.name,
+    $collectionId: '',
+    $databaseId: '',
+    $createdAt: new Date().toISOString(),
+    $updatedAt: new Date().toISOString(),
+    $permissions: [],
+    $sequence: '',
+    name: cat.name,
+    description: cat.description,
+  }))
 
-  const { data: categories } = useAppwrite({ fn: get_categories })
+  // Filter menu items by category and search query
+  const menuItems = useMemo(() => {
+    let filtered = dummyData.menu as unknown as MenuItem[];
 
-  useEffect(()=>{
-    refetch({ category: category ?? '', query: query ?? '', limit: 6})
-  }, [refetch, query, category])
+    // Filter by category
+    if (category && category !== '') {
+      filtered = filtered.filter(item => 
+        (item as any).category_name?.toLowerCase() === category.toLowerCase()
+      );
+    }
+
+    // Filter by search query
+    if (query && query !== '') {
+      const searchLower = query.toLowerCase();
+      filtered = filtered.filter(item => 
+        item.name.toLowerCase().includes(searchLower) ||
+        item.description.toLowerCase().includes(searchLower)
+      );
+    }
+
+    return filtered.slice(0, 6); // Limit to 6 items like the original
+  }, [category, query])
 
   return (
     <SafeAreaView className='bg-white h-full'>
-      <Button title='Seed' onPress={() => seed().catch((error) => console.log("Error occured", error) )} />
       <FlatList 
           ListHeaderComponent={()=> (
             <View className='my-5 gap-5'>
@@ -44,19 +66,18 @@ const SearchScreen = () => {
               </View>
 
               <SearchBar />
-              <Filter categories={categories as unknown as Category[]}/>
+              <Filter categories={categories}/>
             </View>
           )}
-          data={data}
+          data={menuItems}
           renderItem={({item, index})=>{
             const isFirstRightColItem = index % 2 === 0;
             return (
               <View className={clsx('flex-1 max-w-[48%]', !isFirstRightColItem? 'mt-10':'mt-0')}>
-                <MenuCard item={ item as unknown as MenuItem } />
+                <MenuCard item={item as MenuItem} />
               </View>
             )
           }}
-          keyExtractor={item => item.$id}
           numColumns={2}
           columnWrapperClassName='gap-7'
           contentContainerClassName='gap-7 px-5 pb-32'/>

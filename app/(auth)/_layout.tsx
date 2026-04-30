@@ -7,7 +7,9 @@ import useAuthStore from '@/store/auth.store'
 
 const AuthLayout = () => {
 
-  const { isAuthenticated } = useAuthStore();
+  // const { isAuthenticated } = useAuthStore();
+
+  const  isAuthenticated  = true;
 
   if (isAuthenticated) return <Redirect href='/' />
 
